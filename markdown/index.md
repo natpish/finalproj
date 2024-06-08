@@ -197,12 +197,8 @@ To overcome this issue, we used another CC3200 to supply VCC and GND to the IR r
 Another issue occurred with the JSON object manipulation for POST requests, that was challenging for posting two different data values continuously. Lastly, during the presentation, AWS could not connect successfully to the board due to some back-end issues.
 
 # Future Work
-
-Given more time, we had the idea of developing a web app to allow users
-to control the device from their cell phone. Another idea we wanted to
-implement in the future is adding a grow light and pH controller to
-maintain a more suitable and stable environment for different plants to
-grow.
+Given the principle challenge of the INA219 impractical breadboard prototyping, a PCB or soldered board prototype to correctly fix the wire header for VIN + and VIN - would lead to a robust prototype. Furthermore, adding another modules to supply VCC and GND pins separately from the CC3200 in a prototype designed with better power stability for the modules would lead to more successful results.
+Lastly, advancing our AWS Cloud back-end to only forward the correct SMS messages but to also store data and collect insights about energy consumption should be the focus for the next prototype.
 
 
 # Finalized BOM
