@@ -86,7 +86,7 @@ This architecture enables continuous power monitoring insights for the user ever
   <div style="display:inline-block;vertical-align:top;flex:0 0 400px;">
     <div class="fig">
       <img src="./media/Image_005.jpg" style="width:90%;height:auto;" />
-      <span class="caption">System Flowchart</span>
+      <span class="caption"> Smart Power Meter IoT Architecture</span>
     </div>
   </div>
 </div>
