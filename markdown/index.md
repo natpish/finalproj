@@ -183,11 +183,12 @@ It is recommended to connect an extra capacitor between VIN + and VIN - for the 
 </div>
 
 # Challenges
-
-The most significant challenge we faced while developing this prototype
-was of inaccurate and inconsistent Electrical Conductivity (EC)
-measurements. This occurred due to two reasons: probe channel
-polarization and current limitations of GPIO pins.
+The principle challenge was establishing I2C communication with the first batch the INA219 sensors ordered (not Adafruit). Saifedin spent many days troubleshooting why the I2C communication is failing, and using a protocol analyzer it was identified that there was an abrupt clock that is consistently shorted to GND. It was assumed those parts were defective, and an Adafruit sensor ordered arrived before the prototype presentation.The only difference was that this board an LED indicator to indicate power stability across the board. It was discovered that those INA219 breakout boards have a wire header for VIN + and VIN - that is impractical for breadboard prototyping because the entire breakout board is designed for PCB mounting, and not for breadboard prototypes. This connection header kept being loose, and attempting to force the connection allowed I2C communication to work. We realized because of how extremely frequent the wire header was loose, the all the connections to the sensor were grounded - by design to avoid damaging the INA219 chip.
+This imposed a challenge to prepare a robust prototype, as integrating the Oled and relay throughout was very difficult because of the difficulty to have consistent power stability with loose wire header.
+The only way this challenge was overcome for the demonstration was by holding the wire header firmly to the breakout board but that does not always help.
+There are many components used for this prototype and power stability across the entire was impossible with the limited VCC pins and GND pins. The INA219 continuously led to cases where the Oled and CC3200 were sinking current because of the power instability. Therefore, when connecting the same VCC of the CC3200 shared by two or modules all the modules stopped operating. In a similar fashion, using common GND pins for different modules, even with the load, led to the same issue. 
+To overcome this issue, we used another CC3200 to supply VCC and GND to the IR reciever and relay. We also made sure to add separate VCC and GND pins to each module, and lastly we added a 100 uF capacitor between VCC and GND to filter out any voltage surges that led to more robustness, especially with the instability issue of the INA219 sensor. 
+Another issue occurred with the JSON object manipulation for POST requests, that was challenging for posting two different data values continuously. Lastly, during the presentation, AWS could not connect successfully to the board due to some back-end issues.
 
 ## Probe Channel Polarization
 
