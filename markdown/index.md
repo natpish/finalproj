@@ -1,33 +1,14 @@
 ---
-title: 'NutriSense: Automated Hydroponics Dosing System'
-author: '**Kushagra Tiwari and Shengmin Liu** (website template by Ryan Tsang)'
-date: '*EEC172 WQ24*'
-
-subtitle: '<blockquote><b>EEC172 Final Project Webpage Example</b><br/>
-Note to current students: this is an <i>example</i> webpage and
-may not fulfill all stated requirements of the current quarter''s 
-assignment.<br/>The website source is hosted 
-<a href="https://github.com/ucd-eec172/project-website-example">on github</a>.
-</blockquote>'
+title: 'Cloud Driven Smart Energy Meter'
+author: '**Natalya Pishna and Saifedin Maani** (website template by Ryan Tsang)'
+date: '*EEC172 SQ24*'
 
 toc-title: 'Table of Contents'
 abstract-title: '<h2>Description</h2>'
-abstract: 'Hydroponics is a technique where plants are grown in a nutrient-rich
-solution. This soil- free technique has been gaining traction recently
-due to its ability to optimize resource utilization. However, since
-plants are highly sensitive to changes in TDS, hydroponic setups require
-continuous TDS monitoring and adjustment. NutriSense, our device, allows
-hobbyists to achieve ideal hydroponics results on a small scale. It
-continuously monitors TDS and temperature, allowing the user to remotely
-read the status over AWS IoT cloud. The user can remotely enter upper
-and lower thresholds for TDS, and the device will automatically add
-nutrient solution or water to keep the TDS bounded by the thresholds.
-The device can also be configured to send notifications over SNS when
-the TDS value goes outside thresholds.
+abstract: 'Our innovative Smart Power Meter is designed to transform how home energy consumption is managed and monitored. This Smart Power Meter conducts real-time power measurements for household appliances, and controls power utilization with reliable relays. The primary advantage of this design is to provide users with actionable insights into their energy use, through informed monitoring of local rates and consumption daily, using our Cloud service. This is the standout feature of this smart meter powered by AWS Cloud SNS communication, which can also send immediate notifications during power outages and alerts about peak hour rates to avoid high energy costs 
 <br/><br/>
-Our source code can be found 
-<!-- replace this link -->
-<a href="https://github.com/ucd-eec172/project-website-example">
+Our source code can be found
+<a href="https://github.com/natpish/final_proj_src_code">
   here (placeholder)</a>.
 
 <div style="display:flex;flex-wrap:wrap;justify-content:space-evenly;padding-top:20px">
@@ -49,9 +30,6 @@ Our source code can be found
 </div>
 '
 ---
-
-<!-- EDIT METADATA ABOVE FOR CONTENTS TO APPEAR ABOVE THE TABLE OF CONTENTS -->
-<!-- ALL CONTENT THAT FOLLWOWS WILL APPEAR IN AND AFTER THE TABLE OF CONTENTS -->
 
 # Market Survey
 
