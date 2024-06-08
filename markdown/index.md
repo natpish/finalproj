@@ -127,28 +127,22 @@ Based on user settings configured through AWS IoT, the Smart Energy Meter can co
 # Implementation
 
 ### CC3200 Core Hardware
-The core hardware of the prototype is illustrated in the schematic shown in \textit{\textbf{Figure 4}}. The schematic shows all the hardware modules involved, along with all the pin connections, additional components and organization of the embedded system architecture.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1.1\linewidth,height=6in]{schematic.png}
-    \caption{Smart Power Meter Prototype Schematic}
-    \label{fig:button-3}
-\end{figure}
+The core hardware of the prototype is illustrated in the schematic shown in Figure 4. The schematic shows all the hardware modules involved, along with all the pin connections, additional components and organization of the embedded system architecture.
 
 ### CC3200 Core Software
 The core software of the prototype is illustrated in the block diagram shown in \textit{\textbf{Figure 5}}. The diagram summarizes the logic components of the software involved in the prototype.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1.1\linewidth,height=3in]{s_block.png}
-    \caption{Smart Power Meter Prototype Software}
-    \label{fig:button-4}
-\end{figure}
-
-
 ### INA219 Overview and Hardware Configuration
 The INA219 power sensor measures voltage and current using ADC applied to a 0.1 Ohm shunt voltage measurement. It can communicate with a micro controller via I2C. The Adafruit INA219 breakout board module was used, which was equipped with INA219 pull-up resistors for I2C to easily integrate the INA219 with the prototype. A 3.3 VCC and GND is connected from the C3200 to power the INA219 chip. The VIN + and VIN - are the pins that connected to the 0.1 Ohm shunt resistor, in which the VIN + was connected to the power supply and VIN - was connected to the load entry node. The INA219 additionally has two configuration pins A0 and A1 used to customize the I2C device address between 16 different possible addresses. In the case of the Adafruit INA210 breakout board, both pins were connected to GND and so the device address was by default 0x40.
+
+  </div>
+  <div style="display:inline-block;vertical-align:top;flex:0 0 500px">
+    <div class="fig">
+      <img src="./media/image3.png" style="width:90%;height:auto;" />
+      <span class="caption"> Figure 4: Smart Power Meter Prototype Schematic</span>
+    </div>
+  </div>
+</div>
 
 ### INA219 I2C Firmware Implementation
 The I2C API Library for the INA219 integration with the CC3200 was written by Saifedin using the INA219 data-sheet (containing information about device and register addresses). In the implementation, the main two register addresses used were 0x01 for the shunt voltage and 0x02 for the bus voltage. These are 16 bit registers, and the I2C readfrom function was adapted to use 2 bytes rather than just one byte in other I2C CC3200 applications. Using the shunt voltage, the current was calculated by dividing the shunt voltage reading by 0.1 ohm. Power can then be calculated by multiplying the calculated current with the voltage reading.
