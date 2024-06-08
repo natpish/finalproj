@@ -78,6 +78,15 @@ The system architecture consists of two architectures: IoT and Embedded System a
 There are 4 main hardware components in this architecture: The CC3200 micro-controller, the INA219 current sensor, Oled display and a single-channel relay module.
 The CC3200 enables power supplied to a DC load using a 5V High/Low trigger single-channel relay module that can be used to connect/disconnect power via a GPIO Output High level trigger. When power is supplied, the INA219 sensor measures voltage and current through a 0.1 Ohm shunt voltage resistor. These power measurements can be used to measure the power consumed by the load. The data is obtained via I2C communication, and can then be used to compute energy consumption calculations such as hourly energy cost, and hourly average power (kW/h).
 
+  </div>
+  <div style="display:inline-block;vertical-align:top;flex:0 0 400px;">
+    <div class="fig">
+      <img src="./media/image1.png" style="width:90%;height:auto;" />
+      <span class="caption"> Smart Power Meter IoT Architecture</span>
+    </div>
+  </div>
+</div>
+
 ### IoT System Architecture
 Our IoT infrastructure enables the user with the advantage of robust energy consumption management, and monitoring. User settings and configurations such as manual power control, and hourly rate adjustments per peak hours can be configured onto the micro-controller via GET requests. Furthermore, the hourly average power consumption and load status are communicated to the user directly through POST requests forwarded to the user through AWS IoT SNS. 
 This architecture enables continuous power monitoring insights for the user every hour, in the aim of better energy management enabled by insights and power control.
@@ -85,8 +94,8 @@ This architecture enables continuous power monitoring insights for the user ever
   </div>
   <div style="display:inline-block;vertical-align:top;flex:0 0 400px;">
     <div class="fig">
-      <img src="./media/Image_005.jpg" style="width:90%;height:auto;" />
-      <span class="caption"> Smart Power Meter IoT Architecture</span>
+      <img src="./media/image2.png" style="width:90%;height:auto;" />
+      <span class="caption">  Smart Power Meter Embedded System Architecture</span>
     </div>
   </div>
 </div>
