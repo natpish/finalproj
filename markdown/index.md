@@ -31,18 +31,13 @@ Our source code can be found
 '
 ---
 
-# Market Survey
+# HOW IS OUR PROJECT DIFFERENT?
+## Existing Products:
 
-There are two types of similar product on the market. The first one is
-products from AeroGarden. Their products allow users to grow plants in
-nutrient solutions in a limited amount of usually 5 to 10. Compared with
-this product, our product provides an automated system for nutrient
-control that ensures the plant always has the correct amount of
-nutrients needed to avoid excess or insufficient nutrients. The other
-product is an expensive commercial system for horticulture aiming for a
-large scale of growth. Compared with this one, our product has the
-advantage of being cheap and small-scale which is more suitable for
-individual hobbyists to explore hydroponics.
+Poniie, kuman, MECHEER and existing products that monitor real-time energy consumption and display cost. 
+Our product goes beyond just monitoring, it also provides cloud-driven insights to revolutionize how 
+you manage your energy consumption.The other products that are similar are expensive, 
+but our product has theadvantage of being cheap and small-scale which is more suitable for homeowners.
 
 <div style="display:flex;flex-wrap:wrap;justify-content:space-evenly;">
   <div style='display: inline-block; vertical-align: top;'>
