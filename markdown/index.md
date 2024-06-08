@@ -36,8 +36,8 @@ Our source code can be found
 
 Poniie, kuman, MECHEER and existing products that monitor real-time energy consumption and display cost. 
 Our product goes beyond just monitoring, it also provides cloud-driven insights to revolutionize how 
-you manage your energy consumption.The other products that are similar are expensive, 
-but our product has theadvantage of being cheap and small-scale which is more suitable for homeowners.
+you manage your energy consumption. The other products that are similar are expensive, 
+but our product has the advantage of being cheap and small-scale which is more suitable for homeowners.
 
 <div style="display:flex;flex-wrap:wrap;justify-content:space-evenly;">
   <div style='display: inline-block; vertical-align: top;'>
