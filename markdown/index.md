@@ -72,22 +72,16 @@ but our product has the advantage of being cheap and small-scale which is more s
 
 <div style="display:flex;flex-wrap:wrap;justify-content:space-evenly;">
   <div style="display:inline-block;vertical-align:top;flex:1 0 400px;">
-    As shown in the system flowchart, we use one of the CC3200 boards for
-    the closed feedback loop for maintaining concentration in the
-    environment. The board will read values with I2C protocol through an ADC
-    which reads values from the thermistor and the TDS meter sensor. The
-    board will also periodically read user-defined thresholds from the AWS
-    cloud using RESTful APIs. When the sensory values read outside of the
-    user-defined thresholds, the board will activate the motor control
-    function to pump either water or nutrient solution to bring the
-    concentration back within the thresholds. Meanwhile, another CC3200
-    board is frequently reading from the AWS cloud to present the current
-    TDS reading and user-defined threshold to the user on an OLED through
-    SPI protocols. To adjust the thresholds, the user can either do it
-    remotely or locally by using a TV remote to type the number into the IR
-    receiver. The adjustments will be updated to the AWS and if the user
-    updates remotely, the local CC3200 board will update the values in the
-    next synchronization.
+The system architecture consists of two architectures: IoT and Embedded System architectures.
+
+### Embedded System Architecture
+There are 4 main hardware components in this architecture: The CC3200 micro-controller, the INA219 current sensor, Oled display and a single-channel relay module.
+The CC3200 enables power supplied to a DC load using a 5V High/Low trigger single-channel relay module that can be used to connect/disconnect power via a GPIO Output High level trigger. When power is supplied, the INA219 sensor measures voltage and current through a 0.1 Ohm shunt voltage resistor. These power measurements can be used to measure the power consumed by the load. The data is obtained via I2C communication, and can then be used to compute energy consumption calculations such as hourly energy cost, and hourly average power (kW/h).
+
+### IoT System Architecture
+Our IoT infrastructure enables the user with the advantage of robust energy consumption management, and monitoring. User settings and configurations such as manual power control, and hourly rate adjustments per peak hours can be configured onto the micro-controller via GET requests. Furthermore, the hourly average power consumption and load status are communicated to the user directly through POST requests forwarded to the user through AWS IoT SNS. 
+This architecture enables continuous power monitoring insights for the user every hour, in the aim of better energy management enabled by insights and power control.
+
   </div>
   <div style="display:inline-block;vertical-align:top;flex:0 0 400px;">
     <div class="fig">
