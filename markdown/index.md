@@ -95,20 +95,17 @@ This architecture enables continuous power monitoring insights for the user ever
 
 <div style="display:flex;flex-wrap:wrap;justify-content:space-evenly;">
   <div style="display:inline-block;vertical-align:top;flex:1 0 300px;">
-    Our system works based on the following state diagram. The device will
-    periodically monitor the temperature and the electrical conductivity
-    (EC) of the solution and convert the values into a TDS value using a
-    calibration curve. At the same time, the device will check for threshold
-    inputs, both over the AWS shadow and via manual input on the IR
-    receiver. It will compare the TDS with the lower and upper thresholds
-    set by the user. If the value is within the thresholds, it will stay in
-    the rest state. If the TDS is higher than the upper thresholds, it will
-    go to the water state and activate the water pump until the PPM is lower
-    than the upper thresholds and go back to the rest state. If the PPM is
-    lower than the lower thresholds, it will go to the nutrient state and
-    activate the nutrient pump until the PPM is higher than the lower
-    thresholds and go back to the rest state. In each state, the device will
-    periodically post the TDS.
+    
+### Local System Overview
+The Smart Power Meter was designed using the CC3200 Micro-controller integrated with an Oled screen display, a power sensor and wireless IoT communication. Our design uses the INA219 to collect power measurements interfaced with the CC3200 using I2C.
+The measurements are used to compute real-time energy consumption calculations using local rates, and shown for the user on an Oled display. The onsite UI is also integrated with an manual override capability for power control using an IR receiver feature.
+
+### Cloud Driven Insights
+The Smart Power Meter drives energy monitoring and management through our Cloud AWS IoT servers, enabling dynamic user setting changes and local rate variations using GET requests along with reporting of hourly power data and outage notification via POST requests. 
+
+### Power Control
+Based on user settings configured through AWS IoT, the Smart Energy Meter can control a relay connected by GPIO, in order to connect and disconnect power to a load. This feature allows remote management of power consumption based on user preferences driven by Cloud data insights.
+
   </div>
   <div style="display:inline-block;vertical-align:top;flex:0 0 500px">
     <div class="fig">
@@ -120,166 +117,62 @@ This architecture enables continuous power monitoring insights for the user ever
 
 # Implementation
 
-### CC3200-LAUNCHXL Evaluation Board
+### CC3200 Core Hardware
+The core hardware of the prototype is illustrated in the schematic shown in \textit{\textbf{Figure 4}}. The schematic shows all the hardware modules involved, along with all the pin connections, additional components and organization of the embedded system architecture.
 
-All control and logic was handled by two CC3200 microcontroller units,
-one each for the Master and Slave device. On the master device, it was
-responsible for decoding IR inputs from the remote to allow the user to
-input thresholds to be sent over AWS. The board’s SPI functionality,
-using the TI SPI library, was used to interface with the OLED display.
-The MCU is WiFi enabled, allowing a remote connection between the two
-boards.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.1\linewidth,height=6in]{schematic.png}
+    \caption{Smart Power Meter Prototype Schematic}
+    \label{fig:button-3}
+\end{figure}
 
-On the slave device, the microcontroller was responsible for the same
-functionalities as above, in addition to the TDS reading and control.
-This includes interfacing with the ADC over the I2C bus, reading 
-thresholds over HTTP from the AWS device shadow, writing the reported 
-TDS to the device shadow, and activating the two pumps using the 
-BJT control circuit.
+### CC3200 Core Software
+The core software of the prototype is illustrated in the block diagram shown in \textit{\textbf{Figure 5}}. The diagram summarizes the logic components of the software involved in the prototype.
 
-## Functional Blocks: Master
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.1\linewidth,height=3in]{s_block.png}
+    \caption{Smart Power Meter Prototype Software}
+    \label{fig:button-4}
+\end{figure}
 
-### AWS IoT Core
 
-<div style="display:flex;flex-wrap:wrap;justify-content:space-between;">
-  <div style='display: inline-block; vertical-align: top;flex:1 0 200px'>
-    The AWS IoT core allows our devices to communicate with each other
-    asynchronously. The master device can update the desired thresholds, and
-    the slave device will read them and synchronize them to the reported
-    state. The slave device will also post the TDS and temperature readings
-    periodically.
-  </div>
-  <div style='display: inline-block; vertical-align: top;flex:0 0 400px'>
-    <div class="fig">
-      <img src="./media/Image_007.jpg" style="width:auto;height:2.5in" />
-      <span class="caption">Device Shadow JSON</span>
-    </div>
-  </div>
-</div>
+### INA219 Overview and Hardware Configuration
+The INA219 power sensor measures voltage and current using ADC applied to a 0.1 Ohm shunt voltage measurement. It can communicate with a micro controller via I2C. The Adafruit INA219 breakout board module was used, which was equipped with INA219 pull-up resistors for I2C to easily integrate the INA219 with the prototype. A 3.3 VCC and GND is connected from the C3200 to power the INA219 chip. The VIN + and VIN - are the pins that connected to the 0.1 Ohm shunt resistor, in which the VIN + was connected to the power supply and VIN - was connected to the load entry node. The INA219 additionally has two configuration pins A0 and A1 used to customize the I2C device address between 16 different possible addresses. In the case of the Adafruit INA210 breakout board, both pins were connected to GND and so the device address was by default 0x40.
 
-### OLED Display
+### INA219 I2C Firmware Implementation
+The I2C API Library for the INA219 integration with the CC3200 was written by Saifedin using the INA219 data-sheet (containing information about device and register addresses). In the implementation, the main two register addresses used were 0x01 for the shunt voltage and 0x02 for the bus voltage. These are 16 bit registers, and the I2C readfrom function was adapted to use 2 bytes rather than just one byte in other I2C CC3200 applications. Using the shunt voltage, the current was calculated by dividing the shunt voltage reading by 0.1 ohm. Power can then be calculated by multiplying the calculated current with the voltage reading.
 
-<div style="display:flex;flex-wrap:wrap;justify-content:space-between;">
-  <div style='display: inline-block; vertical-align: top;flex:1 0 400px'>
-    On both Master and Slave devices, the user can view the current TDS and
-    temperature of the plant solution on an OLED display. The user can also
-    use the display to view and edit the TDS thresholds. The CC3200 uses the
-    SPI bus to communicate with the display module.
-  </div>
-  <div style='display: inline-block; vertical-align: top;flex:0 0 400px'>
-    <div class="fig">
-      <img src="./media/Image_008.jpg" style="width:auto;height:2in" />
-      <span class="caption">OLED Wiring Diagram</span>
-    </div>
-  </div>
-</div>
+### Single-Channel DC Relay Hardware and Software
+A 5V powered Single-Channel DC Relay was used to control the load power. DC + and DC - were the relay power pins connected to the CC3200 5V pin and GND. The IN pin is used to control the state of the relay using an Output HIGH/LOW trigger depending on the configuration. In our prototype, GPIO pin 60 was configured as an output pin and connected to the IN pin. This relay has three application pins: NO, NC, and COM. COM is always connected directly to the DC power positive terminal. The NO (Normally-Open) and NC (Normally-Closed) pins are used exclusively. If NC is open, and NO is connected directly to the load. Then, if the IN receives a HIGH GPIO signal the relay connects the power to the load, otherwise the load power is always disconnected (OPEN). This was the configuration used in our prototype.
 
-### IR Receiver
+### Oled Display
+A 1.5"" 128x128 OLED Adafruit breakout board was used to display
+graphics and interfaces with the CC3200 via 3-pin SPI communication.
+The pins used from this breakout boardwere the SCK (SPI Clock pin), SI (SPI MOSI pin), OLEDCS( SPI CSpin), R (RESET pin), DC (Data/Command pin), Vin (3.3 V supply)and a GND pin. The OLEDCS was configured to be connected to a
+GPIO for a software chip select, the DC pin was biased to HIGH
+for Data and LOW for Command. Lastly, there was an active-low
+reset pin. For the prototype, the title "Cloud-Driven Smart Energy Meter" would first be displayed. Then, a list of dynamically changing values would be displayed to reflect the measurements and calculations for average power, energy cost and relay status. The placeholder text would first be printed, and remain static throughout such as "Power: ". However, we developed a function to input float values and desired display indexes to print characters next to the placeholder text dynamically as values changed. This way "Power: -5.437 mW" would be printed and varied according to calculations and measurements.
 
-<div style="display:flex;flex-wrap:wrap;justify-content:space-between;">
-  <div style='display: inline-block; vertical-align: top;flex:1 0 400px'>
-    On both the Master and Slave devices, a user can input the TDS
-    thresholds using a TV remote. These TV remotes use the NEC code format
-    with a carrier frequency of 38KHz. The Vishay IR receiver is connected
-    to Pin 62 of the CC3200, which is configured as a GPIO input pin. Each
-    positive edge of the signal triggers an interrupt in the main program,
-    storing the pulse distances into a buffer, and allowing us to decode the
-    inputs (1-9, delete and enter). The IR receiver is connected to VCC
-    through a resistor and a capacitor to filter any ripples.
-  </div>
-  <div style='display: inline-block; vertical-align: top;flex:0 0 400px'>
-    <div class="fig">
-      <img src="./media/Image_009.jpg" style="width:auto;height:2in" />
-      <span class="caption">IR Receiver Wiring Diagram</span>
-    </div>
-  </div>
-</div>
+### IR Receiver Software and Hardware
+An IR receiver was used and interfaced with GPIO pin 18 with the OUT pin, where IR digital signals were decoded following the NEC specification encoding. The IR receiver requires a low-pass filter recommended with 100 ohm resistor in series with a capacitor to GND, this is to provide power stability for the IR receiver. \cite{Vishay:824932} The decoding of the signal was implemented using SysTick timers to time and record lengths of pulses per the NEC specification, from which data is sampled and the button pressed from the IR remote could be identified \cite{Vishay:80071}.
+The IR receiver application was solely used for a user controlled manual override of the relay. 
 
-## Functional Blocks: Slave
+### AWS IoT Integration
+Using an IoT server that was configured with the enumeration of
+an AWS IoT device. For the prototype, an SNS topic subscribed to
+an email address was used, with an IoT rule was created with an
+SQL statement that uses the SELECT modifier to send a specified
+area of the shadow POST update JSON message. In the prototype,
+it was attempted to send status on hourly energy costs and relay
+operation.
 
-The slave device contains all the functional blocks from the master
-device, plus the following:
+### Prototype Application Notes
+The INA219 is also capable of measuring current and power designed to concurrently support micro-controller CPU compute. In practice, we avoided reading from these registers to avoid I2C communication overhead.
+It is recommended to use separate VCC and GND pins for all modules and not to provide common VCC or GND 
+It is recommended to connect an extra capacitor between VIN + and VIN - for the INA219 which helped stabilise the sensor readings and provided better accuracy for I2C readings.
 
-### Analog-To-Digital Converter (ADC) Board
-
-<div style="display:flex;flex-wrap:wrap;justify-content:space-between;">
-  <div style='display: inline-block; vertical-align: top;flex:1 0 400px'>
-    The outputs from the thermistor and TDS sensor board are
-    in the form of analog voltages, which need to be converted to digital
-    values to be usable in our program. We chose the AD1015 breakout board
-    from Adafruit, which sports 4-channels and 12 bits of precision. We
-    ended up using only 2 channels, so there is a potential for even more
-    cost savings. The ADC board supports I2C communication, which we can use
-    to request and read the two channel voltages. 
-    The <a href="https://cdn-shop.adafruit.com/datasheets/ads1015.pdf">
-    product datasheet</a> contains the necessary configuration values
-    and register addresses for operation.
-  </div>
-  <div style='display: inline-block; vertical-align: top;flex:1 0 400px'>
-    <div class="fig">
-      <img src="./media/Image_010.jpg" style="width:auto;height:2in" />
-      <span class="caption">ADC Wiring Diagram</span>
-    </div>
-  </div>
-</div>
-
-### Thermistor
-
-<div style="display:flex;flex-wrap:wrap;justify-content:space-between;">
-  <div style='display: inline-block; vertical-align: top;flex:1 0 300px;'>
-    Conductivity-based TDS measurements are sensitive to temperature. To
-    allow accurate TDS measurements in a variety of climates and seasons,
-    temperature compensation calculations must be performed. To measure the
-    temperature, we use an NTC thermistor connected in a voltage divider
-    with a 10k resistor. The voltage across the resistor is read by the ADC
-    and converted to temperature using the equation provided by the
-    thermistor datasheet.
-  </div>
-  <div style='display: inline-block; vertical-align: top;flex:1 0 400px'>
-    <div class="fig">
-      <img src="./media/Image_011.jpg" style="width:auto;height:2in" />
-      <span class="caption">Thermistor Circuit Diagram</span>
-    </div>
-  </div>
-</div>
-
-### TDS Sensor Board
-
-<div style="display:flex;flex-wrap:wrap;justify-content:space-between;">
-  <div style='display: inline-block; vertical-align: top;flex:1 0 500px'>
-    In our first attempt to measure TDS, we used a simple two-probe analog
-    setup with a voltage divider. We soon found out that this was a naïve
-    approach (see Challenges). Consequently, we acquired a specialty TDS
-    sensing board from CQRobot, which generates a sinusoidal pulse and
-    measures the voltage drop to give a highly precise voltage to the ADC.
-    The MCU can then convert this voltage to a TDS value using the equation
-    provided by the device datasheet. We calibrated the TDS readings using a
-    standalone TDS sensor pen. After calibration and setting up the curves
-    for temperature compensation, we were able to achieve TDS readings
-    accurate to within 5% of the TDS sensor pen.
-  </div>
-  <div style='display: inline-block; vertical-align: top;flex:1 0 600px'>
-    <div class="fig">
-      <img src="./media/Image_012.jpg" style="width:auto;height:2in;padding-top:30px" />
-      <span class="caption">TDS Sensor Wiring Diagram</span>
-    </div>
-  </div>
-</div>
-
-### Pumps and Control Circuit
-
-<div style="display:flex;flex-wrap:wrap;justify-content:space-between;">
-  <div style='display: inline-block; vertical-align: top;flex:1 0 500px'>
-    The CC3200 is unable to provide sufficient power to drive the pumps,
-    which need 100mA of current each. Therefore, we used an external power
-    source in the form of 2 AA batteries for each pump motor. To allow the
-    CC3200 to turn on/off the motors, we designed a simple amplifier using a
-    Common Emitter topology. When the control pin is asserted HIGH, the BJT
-    will allow current to flow from 3V to ground through the pump motor.
-    Conversely, if the control signal is LOW, the BJT will not allow current
-    to flow in the motor. For each motor, there is a reverse-biased diode
-    connected across it. This protects our circuit from current generated by
-    the motor if it is spun from external force or inertia.
   </div>
   <div style='display: inline-block; vertical-align: top;flex:1 0 600px'>
     <div class="fig">
